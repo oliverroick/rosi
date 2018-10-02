@@ -18,6 +18,10 @@ def convert(geojson, wkid=4326):
         esri_json['points'] = geojson['coordinates']
         return geometry.MultiPoint(esri_json)
 
+    elif geojson['type'] == 'LineString':
+        esri_json['paths'] = [geojson['coordinates']]
+        return geometry.Polyline(esri_json)
+
     else:
         msg = 'Type {} is not supported.'.format(geojson['type'])
         raise UnsupportedGeometryType(msg)

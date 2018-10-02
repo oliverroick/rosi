@@ -1,6 +1,8 @@
 import pytest
 import rosi
 
+from .util import depth
+
 
 def test_wkid_is_set():
     geojson = {
@@ -34,6 +36,25 @@ def test_multipoint_is_converted():
     esri_geom = rosi.convert(geojson)
     assert esri_geom.type == 'Multipoint'
     assert esri_geom.points == geojson['coordinates']
+
+
+def test_line_is_converted():
+    geojson = {
+        "type": "LineString",
+        "coordinates": [
+            [12.381463, 51.343346],
+            [12.382900, 51.342984],
+            [12.382535, 51.341993],
+            [12.382578, 51.341510]
+        ]
+    }
+    esri_geom = rosi.convert(geojson)
+    assert esri_geom.type == 'Polyline'
+    assert esri_geom.is_valid is True
+    assert depth(esri_geom.paths) == 3
+    assert len(esri_geom.paths) == 1
+    assert len(esri_geom.paths[0]) == 4
+    assert esri_geom.paths[0] == geojson['coordinates']
 
 
 def test_unsupported_geometry_type_throws_exception():
