@@ -14,6 +14,10 @@ def convert(geojson, wkid=4326):
         esri_json['y'] = geojson['coordinates'][1]
         return geometry.Point(esri_json)
 
+    elif geojson['type'] == 'MultiPoint':
+        esri_json['points'] = geojson['coordinates']
+        return geometry.MultiPoint(esri_json)
+
     else:
         msg = 'Type {} is not supported.'.format(geojson['type'])
         raise UnsupportedGeometryType(msg)

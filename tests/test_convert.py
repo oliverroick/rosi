@@ -24,6 +24,18 @@ def test_point_is_converted():
     assert esri_geom.y == y
 
 
+def test_multipoint_is_converted():
+    geojson = {
+       'type': 'MultiPoint',
+       'coordinates': [
+           [12.374811, 51.340652], [12.375476, 51.338521]
+       ]
+    }
+    esri_geom = rosi.convert(geojson)
+    assert esri_geom.type == 'Multipoint'
+    assert esri_geom.points == geojson['coordinates']
+
+
 def test_unsupported_geometry_type_throws_exception():
     geojson = {
         'type': 'Marker',
