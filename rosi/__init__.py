@@ -30,6 +30,14 @@ def convert(geojson, wkid=4326):
         esri_json['rings'] = geojson['coordinates']
         return geometry.Polygon(esri_json)
 
+    elif geojson['type'] == 'MultiPolygon':
+        esri_json['rings'] = [
+            line
+            for polygon in geojson['coordinates']
+            for line in polygon
+        ]
+        return geometry.Polygon(esri_json)
+
     else:
         msg = 'Type {} is not supported.'.format(geojson['type'])
         raise UnsupportedGeometryType(msg)

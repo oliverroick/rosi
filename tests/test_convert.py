@@ -105,6 +105,40 @@ def test_polygon_is_converted():
     assert esri_geom.rings[0] == geojson['coordinates'][0]
 
 
+def test_multipolygon_is_converted():
+    geojson = {
+        "type": "MultiPolygon",
+        "coordinates": [
+            [
+                [
+                    [12.378566, 51.343494],
+                    [12.378501, 51.342864],
+                    [12.379617, 51.342850],
+                    [12.379617, 51.343521],
+                    [12.378566, 51.343494]
+                ]
+            ], [
+                [
+                    [12.379703, 51.342770],
+                    [12.379703, 51.342127],
+                    [12.380883, 51.342167],
+                    [12.380840, 51.342770],
+                    [12.379703, 51.342770]
+                ]
+            ]
+        ]
+    }
+    esri_geom = rosi.convert(geojson)
+    assert esri_geom.type == 'Polygon'
+    assert esri_geom.is_valid is True
+    assert depth(esri_geom.rings) == 3
+    assert len(esri_geom.rings) == 2
+    assert len(esri_geom.rings[0]) == 5
+    assert len(esri_geom.rings[1]) == 5
+    assert esri_geom.rings[0] == geojson['coordinates'][0][0]
+    assert esri_geom.rings[1] == geojson['coordinates'][1][0]
+
+
 def test_unsupported_geometry_type_throws_exception():
     geojson = {
         'type': 'Marker',
