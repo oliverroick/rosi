@@ -105,6 +105,37 @@ def test_polygon_is_converted():
     assert esri_geom.rings[0] == geojson['coordinates'][0]
 
 
+def test_polygon_with_wholes_is_converted():
+    geojson = {
+        "type": "Polygon",
+        "coordinates": [
+            [
+                [12.378823, 51.343601],
+                [12.378180, 51.342824],
+                [12.379660, 51.342261],
+                [12.380154, 51.342850],
+                [12.379982, 51.343105],
+                [12.378823, 51.343601]
+            ], [
+                [12.379016, 51.343199],
+                [12.378737, 51.342917],
+                [12.379381, 51.342636],
+                [12.379703, 51.342958],
+                [12.379016, 51.343199]
+            ]
+        ]
+    }
+    esri_geom = rosi.convert(geojson)
+    assert esri_geom.type == 'Polygon'
+    assert esri_geom.is_valid is True
+    assert depth(esri_geom.rings) == 3
+    assert len(esri_geom.rings) == 2
+    assert len(esri_geom.rings[0]) == 6
+    assert esri_geom.rings[0] == geojson['coordinates'][0]
+    assert len(esri_geom.rings[1]) == 5
+    assert esri_geom.rings[1] == geojson['coordinates'][1]
+
+
 def test_multipolygon_is_converted():
     geojson = {
         "type": "MultiPolygon",
@@ -137,6 +168,58 @@ def test_multipolygon_is_converted():
     assert len(esri_geom.rings[1]) == 5
     assert esri_geom.rings[0] == geojson['coordinates'][0][0]
     assert esri_geom.rings[1] == geojson['coordinates'][1][0]
+
+
+def test_multipolygon_whit_wholes_is_converted():
+    geojson = {
+        "type": "MultiPolygon",
+        "coordinates": [
+            [
+                [
+                    [12.378823, 51.343601],
+                    [12.37818, 51.342824],
+                    [12.37966, 51.342261],
+                    [12.380154, 51.34285],
+                    [12.379982, 51.343105],
+                    [12.378823, 51.343601]
+                ],
+                [
+                    [12.379016, 51.343199],
+                    [12.379703, 51.342958],
+                    [12.379381, 51.342636],
+                    [12.378737, 51.342917],
+                    [12.379016, 51.343199]
+                ]
+            ],
+            [
+                [
+                    [12.374982, 51.341684],
+                    [12.375197, 51.340826],
+                    [12.376785, 51.340692],
+                    [12.376570, 51.341765],
+                    [12.374982, 51.341684]
+                ], [
+                    [12.375583, 51.341577],
+                    [12.375626, 51.341148],
+                    [12.376098, 51.341121],
+                    [12.375583, 51.341577]
+                ]
+            ]
+        ]
+    }
+    esri_geom = rosi.convert(geojson)
+    assert esri_geom.type == 'Polygon'
+    assert esri_geom.is_valid is True
+    assert depth(esri_geom.rings) == 3
+    assert len(esri_geom.rings) == 4
+    assert len(esri_geom.rings[0]) == 6
+    assert len(esri_geom.rings[1]) == 5
+    assert len(esri_geom.rings[2]) == 5
+    assert len(esri_geom.rings[3]) == 4
+    assert esri_geom.rings[0] == geojson['coordinates'][0][0]
+    assert esri_geom.rings[1] == geojson['coordinates'][0][1]
+    assert esri_geom.rings[2] == geojson['coordinates'][1][0]
+    assert esri_geom.rings[3] == geojson['coordinates'][1][1]
 
 
 def test_unsupported_geometry_type_throws_exception():
