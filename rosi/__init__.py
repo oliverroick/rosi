@@ -22,6 +22,10 @@ def convert(geojson, wkid=4326):
         esri_json['paths'] = [geojson['coordinates']]
         return geometry.Polyline(esri_json)
 
+    elif geojson['type'] == 'Polygon':
+        esri_json['rings'] = geojson['coordinates']
+        return geometry.Polygon(esri_json)
+
     else:
         msg = 'Type {} is not supported.'.format(geojson['type'])
         raise UnsupportedGeometryType(msg)

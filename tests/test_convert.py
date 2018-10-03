@@ -57,6 +57,28 @@ def test_line_is_converted():
     assert esri_geom.paths[0] == geojson['coordinates']
 
 
+def test_polygon_is_converted():
+    geojson = {
+        "type": "Polygon",
+        "coordinates": [
+            [
+                [12.3788022, 51.343521],
+                [12.3782229, 51.342810],
+                [12.3796176, 51.342341],
+                [12.3802185, 51.343011],
+                [12.3788022, 51.343521]
+            ]
+        ]
+    }
+    esri_geom = rosi.convert(geojson)
+    assert esri_geom.type == 'Polygon'
+    assert esri_geom.is_valid is True
+    assert depth(esri_geom.rings) == 3
+    assert len(esri_geom.rings) == 1
+    assert len(esri_geom.rings[0]) == 5
+    assert esri_geom.rings[0] == geojson['coordinates'][0]
+
+
 def test_unsupported_geometry_type_throws_exception():
     geojson = {
         'type': 'Marker',
