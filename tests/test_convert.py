@@ -57,6 +57,32 @@ def test_line_is_converted():
     assert esri_geom.paths[0] == geojson['coordinates']
 
 
+def test_multiline_is_converted():
+    geojson = {
+        "type": "MultiLineString",
+        "coordinates": [
+            [
+                [12.381377, 51.34338],
+                [12.382857, 51.34303],
+                [12.382729, 51.34255]
+            ], [
+                [12.381205, 51.34271],
+                [12.380840, 51.34196],
+                [12.382557, 51.34179]
+            ]
+        ]
+    }
+    esri_geom = rosi.convert(geojson)
+    assert esri_geom.type == 'Polyline'
+    assert esri_geom.is_valid is True
+    assert depth(esri_geom.paths) == 3
+    assert len(esri_geom.paths) == 2
+    assert len(esri_geom.paths[0]) == 3
+    assert len(esri_geom.paths[1]) == 3
+    assert esri_geom.paths[0] == geojson['coordinates'][0]
+    assert esri_geom.paths[1] == geojson['coordinates'][1]
+
+
 def test_polygon_is_converted():
     geojson = {
         "type": "Polygon",
