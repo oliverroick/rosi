@@ -3,5 +3,11 @@ python:
   - "3.5"
   - "3.6"
   - "3.7-dev"
+jobs:
+  include:
+    - stage: lint
+      if: branch = master AND type = pull_request
+      python: '3.6'
+      script: flake8 rosi tests
 script:
   - pytest
